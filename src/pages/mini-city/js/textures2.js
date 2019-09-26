@@ -1,7 +1,7 @@
-export default {
-    window () {
-        const canvas = document.createElement('canvas')
-        const ctx = canvas.getContext('2d')
+let textures = {
+    window: function() {
+        let canvas = document.createElement('canvas');
+        let ctx = canvas.getContext('2d');
 
         canvas.width = 32
         canvas.height = 32
@@ -13,7 +13,7 @@ export default {
         }
 
         ctx.fillStyle = colors.border
-        ctx.fillRect(0, 0, 32, 500)
+        ctx.fillRect(0, 0, 32, 32)
         ctx.fillStyle = colors.top
         ctx.fillRect(2, 2, 13, 13)
         ctx.fillStyle = colors.top
@@ -24,9 +24,12 @@ export default {
         ctx.fillRect(17, 17, 13, 13)
 
         let canvasTexture = new THREE.Texture(canvas)
-        canvasTexture.wrapS = THREE.RepeatWrapping
-        canvasTexture.wrapT = THREE.RepeatWrapping
+        canvasTexture.wrapS = THREE.RepeatWrapping;
+        canvasTexture.wrapT = THREE.RepeatWrapping;
         canvasTexture.needsUpdate = true;
-        return canvasTexture
+
+        return canvasTexture;
     }
 }
+
+export default textures;

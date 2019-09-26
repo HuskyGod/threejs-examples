@@ -1,6 +1,6 @@
-import utils from './utils.js'
-
-function Car (color) {
+'use strict'
+import utils from './utils.js';
+const Car = function(color) {
     let colors = [0x2cbab2, 0x47a700, 0xd60000, 0x087f87, 0x37ad0e, 0x4d4d4d, 0xce7e00, 0xe0a213, 0x87bcde]
     let index = Math.floor(Math.random() * colors.length)
 
@@ -15,7 +15,7 @@ function Car (color) {
     addLights()
     addWheels()
 
-    function addWheels () {
+    function addWheels() {
         let wheelFrontLeft = createWheel()
         wheelFrontLeft.position.set(8, 3, -6)
         that.wheels.push(wheelFrontLeft)
@@ -36,7 +36,7 @@ function Car (color) {
         that.wheels.push(wheelBackRight)
         that.mesh.add(wheelBackRight)
 
-        function createWheel () {
+        function createWheel() {
             let wheel = new THREE.Object3D()
 
             let wheelOuterGeometry = new THREE.CylinderGeometry(3, 3, 3, 32)
@@ -59,7 +59,7 @@ function Car (color) {
         }
     }
 
-    function addLights () {
+    function addLights() {
         let carLightsGeometry = new THREE.Geometry()
         let carLigetGeometry = new THREE.BoxGeometry(2, 2, 2)
 
@@ -69,7 +69,7 @@ function Car (color) {
             [-14, 7.1, 6.1],
             [-14, 7.1, -6.1]
         ]
-        carLightsPosition.forEach(function (elem) {
+        carLightsPosition.forEach(function(elem) {
             let x = elem[0],
                 y = elem[1],
                 z = elem[2]
@@ -90,9 +90,10 @@ function Car (color) {
         carLightsGeometry = new THREE.BufferGeometry().fromGeometry(carLightsGeometry)
         let carLights = utils.makeMesh('phong', carLightsGeometry, 0xffffff)
         that.mesh.add(carLights)
+
     }
 
-    function addWindows () {
+    function addWindows() {
         let carWindows = new THREE.Object3D()
 
         let carWindowLeft = new THREE.Object3D()
@@ -106,10 +107,10 @@ function Car (color) {
         carWindowLeft.add(carWindowLeftFront)
 
         let carWindowLeftBackCoords = [
-            [-2, 8],
-            [4, 8],
-            [2.5, 12],
-            [-2, 12]
+            [-9, 8],
+            [-3, 8],
+            [-3, 12],
+            [-7.5, 12]
         ]
         let carWindowLeftBack = makeWindow(carWindowLeftBackCoords)
         carWindowLeft.add(carWindowLeftBack)
@@ -123,20 +124,20 @@ function Car (color) {
         let carWindowFrontGeometry = new THREE.CubeGeometry(0.1, 5, 12)
         carWindowFrontGeometry.rotateZ(0.12 * Math.PI)
         carWindowFrontGeometry.translate(4.2, 10, 0)
-        let carWindowFront = utils.makeMesh('phong', carWindowFrontGeometry)
+        let carWindowFront = utils.makeMesh('phong', carWindowFrontGeometry, 0x000000)
         carWindows.add(carWindowFront)
 
         let carWindowBack = carWindowFront.clone()
         carWindowBack.rotation.z = -0.24 * Math.PI
-        carWindowBack.position.x = -19;
+        carWindowBack.position.x = -19
         carWindowBack.position.y = 6
-
+        // carWindowFrontGeometry.translate(4.2,10,7)
         carWindows.add(carWindowBack)
 
         that.mesh.add(carWindows)
     }
 
-    function addBody () {
+    function addBody() {
         let carBodyCoords = [
             [-13, 2],
             [13, 2],
@@ -156,36 +157,35 @@ function Car (color) {
         that.mesh.add(carBody)
     }
 
-    function makeWindow (coords) {
+    function makeWindow(coords) {
         let windowColor = 0x000000
         let shape = utils.makeShape(coords)
         let geometry = utils.makeExtrudeGeometry(shape, 0.1)
-        geometry.rotateX(0.5 * Math.PI);
+        geometry.rotateX(0.5 * Math.PI)
         let mesh = utils.makeMesh('phong', geometry, windowColor)
         mesh.castShadow = false
         return mesh
     }
 }
-
 Car.prototype = {
-    setPosition: function (x, y, z) {
+    setPosition: function(x, y, z) {
         this.mesh.position.set(x, y, z)
     },
-    forward: function (speed) {
+    forward: function(speed) {
         speed = speed || 1
         this._moving(speed, true)
     },
-    backward: function (speed) {
+    backward: function(speed) {
         speed = speed || 1
         this._moving(speed, false)
     },
-    turnLeft: function (angle, speed) {
+    turnLeft: function(angle, speed) {
         this._turn(angle, true, speed)
     },
-    turnRight: function (angle, speed) {
+    turnRight: function(angle, speed) {
         this._turn(angle, false, speed)
     },
-    _turn: function (angle, direction, speed) {
+    _turn: function(angle, direction, speed) {
         direction = direction ? 1 : -1
         if (speed) {
             if (this.startAngle < angle) {
@@ -202,7 +202,7 @@ Car.prototype = {
             this.mesh.rotation.y += angle * direction
         }
     },
-    _moving: function (speed, direction) {
+    _moving: function(speed, direction) {
         let rotation = this.mesh.rotation.y
         direction = direction ? 1 : -1
         let xLength = speed * Math.cos(rotation) * direction,
@@ -211,9 +211,8 @@ Car.prototype = {
         this.mesh.position.z -= zLength
         this._rotateWheels(speed)
     },
-    _rotateWheels: function (speed) {
-        console.log(this.wheels)
-        this.wheels.forEach(function (elem) {
+    _rotateWheels: function(speed) {
+        this.wheels.forEach(function(elem) {
             elem.rotation.z -= 0.1 * speed
         })
     }

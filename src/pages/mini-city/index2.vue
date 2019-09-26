@@ -1,24 +1,31 @@
 <template>
-  <div>
-      <canvas />
-  </div>
+    <div class="container">
+        <div class="info">
+            <a class="title" href="https://github.com/luosijie/threejs-examples" target="_blank">
+                Mini City
+            </a>
+            <a class="author" href="https://luosijie.github.io/" target="_blank">
+                Created By Jesse Luo
+            </a>
+        </div>
+        <canvas/>
+    </div>
 </template>
-
 <script>
-import utils from './js/utils'
-import textures from './js/textures'
-import treesPosition from './config/treesPosition'
 import Car from './js/Car'
-
+import textures from './js/textures.js'
+import treesPosition from './config/treesPosition'
+import utils from './js/utils.js'
 export default {
-    data () {
+    name: 'HelloWorld',
+    data() {
         return {
             scene: null,
             camera: null,
             renderer: null,
             cars: [],
-            width: 0,
-            height: 0,
+            width: '',
+            height: '',
             config: {
                 isMobile: false,
                 background: 0x282828
@@ -26,15 +33,15 @@ export default {
         }
     },
     methods: {
-        checkUserAgent () {
-            let n = navigator.userAgent
+        checkUserAgent() {
+            let n = navigator.userAgent;
             if (n.match(/Android/i) || n.match(/webOS/i) || n.match(/iPhone/i) || n.match(/iPad/i) || n.match(/iPod/i) || n.match(/BlackBerry/i)) {
                 this.config.isMobile = true
                 this.camera.position.set(420, 420, 420)
                 this.renderer.shadowMap.enabled = false
             }
         },
-        buildMovingCars () {
+        buildMovingCars() {
             let carsPosition = [
                 [-130, 145, 0],
                 [10, 145, 0],
@@ -43,7 +50,7 @@ export default {
                 [-145, -60, 1.5]
             ]
             carsPosition.forEach(elem => {
-                const car = new Car()
+                let car = new Car()
                 let x = elem[0],
                     z = elem[1],
                     r = elem[2]
@@ -53,7 +60,7 @@ export default {
                 this.scene.add(car.mesh)
             })
         },
-        buildStaticCars () {
+        buildStaticCars() {
             let carsPosition = [
                 [-84, 82, 1.5],
                 [-58, 82, 1.5],
@@ -61,7 +68,7 @@ export default {
                 [84, 82, 1.5]
             ]
             carsPosition.forEach(elem => {
-                const car = new Car()
+                let car = new Car()
                 let x = elem[0],
                     z = elem[1],
                     r = elem[2]
@@ -70,9 +77,9 @@ export default {
                 this.scene.add(car.mesh)
             })
         },
-        buildRoad () {
-            const road = new THREE.Object3D()
-            const roadColor = 0xffffff
+        buildRoad() {
+            let road = new THREE.Object3D()
+            let roadColor = 0xffffff
             let roadBorderOuterCoords = [
                 [-160, 160],
                 [160, 160],
@@ -104,7 +111,6 @@ export default {
                 [-19, 99],
                 [-19, 131]
             ]
-
             let roadBorderInnerShape = utils.makeShape(roadBorderInnerCoords)
             let roadBorderInnnerGeometry = utils.makeExtrudeGeometry(roadBorderInnerShape, 0.1)
             let roadBoaderInnder = utils.makeMesh('phong', roadBorderInnnerGeometry, roadColor)
@@ -113,14 +119,13 @@ export default {
 
             let roadLinesGeometry = new THREE.Geometry()
             let roadLineGeometry = new THREE.BoxGeometry(20, 0.1, 2)
-            
+
             let roadLinesBottomGeometry = new THREE.Geometry()
             for (let i = 0; i < 9; i++) {
                 let geometry = roadLineGeometry.clone()
                 geometry.translate(i * 30, 0, -1)
                 roadLinesBottomGeometry.merge(geometry)
             }
-
             roadLinesBottomGeometry.translate(-120, 0, 145)
             roadLinesGeometry.merge(roadLinesBottomGeometry)
 
@@ -135,15 +140,13 @@ export default {
             let roadLinesRightGeometry = roadLinesBottomGeometry.clone()
             roadLinesRightGeometry.rotateY(-0.5 * Math.PI)
             roadLinesGeometry.merge(roadLinesRightGeometry)
-
             roadLinesGeometry = new THREE.BufferGeometry().fromGeometry(roadLinesGeometry)
-            
             let roadLines = utils.makeMesh('phong', roadLinesGeometry, roadColor)
             road.add(roadLines)
 
             this.scene.add(road)
         },
-        buildbuilding () {
+        buildbuilding() {
             let _this = this;
             let planeGeometry = new THREE.BoxBufferGeometry(320, 6, 320)
             let plane = utils.makeMesh('lambert', planeGeometry, 0x6f5f6a)
@@ -156,8 +159,7 @@ export default {
             addHospital()
             addLamps()
 
-            // 路灯
-            function addLamps () {
+            function addLamps() {
                 let lampsPosition = [
                     [-12.5, 12.5, 1.25],
                     [-7.5, 12.5, -0.5],
@@ -181,7 +183,7 @@ export default {
                     [-12.5, 7.5, 1]
                 ]
 
-                lampsPosition.forEach(function (elem) {
+                lampsPosition.forEach(function(elem) {
                     let x = elem[0] * 10,
                         z = elem[1] * 10,
                         r = elem[2]
@@ -192,30 +194,13 @@ export default {
                 })
             }
 
-            // 房子围栏
-            function addFense () {
-                let fenseCoords = [
-                    [-130, -130],
-                    [-130, 130],
-                    [130, 130],
-                    [130, -130],
-                    [20, -130],
-                    [20, -120],
-                    [120, -120],
-                    [120, 120],
-                    [-120, 120],
-                    [-120, -120],
-                    [-20, -120],
-                    [-20, -130],
-                    [-130, -130]
-                ]
-                let fenseShape = utils.makeShape(fenseCoords)
-                let fenseGeometry = utils.makeExtrudeGeometry(fenseShape, 3)
-                let fense = utils.makeMesh('lambert', fenseGeometry, 0xe5cabf)
-                _this.scene.add(fense)
+            function addHospital() {
+                let hospital = createHospital()
+                hospital.position.z = -20
+                _this.scene.add(hospital)
             }
-            // 草平
-            function addGreen () {
+
+            function addGreen() {
                 let greenCoords = [
                     [-120, -120],
                     [-120, 120],
@@ -238,26 +223,61 @@ export default {
                 _this.scene.add(green)
             }
 
-            // 树
-            function addTrees () {
-                treesPosition.forEach(element => {
-                    let x = element[0],
+            function addFense() {
+                let fenseCoords = [
+                    [-130, -130],
+                    [-130, 130],
+                    [130, 130],
+                    [130, -130],
+                    [20, -130],
+                    [20, -120],
+                    [120, -120],
+                    [120, 120],
+                    [-120, 120],
+                    [-120, -120],
+                    [-20, -120],
+                    [-20, -130],
+                    [-130, -130]
+                ]
+                let fenseShape = utils.makeShape(fenseCoords)
+
+                let fenseGeometry = utils.makeExtrudeGeometry(fenseShape, 3)
+                let fense = utils.makeMesh('lambert', fenseGeometry, 0xe5cabf)
+                _this.scene.add(fense)
+            }
+
+            function addTrees() {
+                treesPosition.forEach(function(elem) {
+                    let x = elem[0],
                         y = 1,
-                        z = element[1]
+                        z = elem[1]
                     let tree = createTree(x, y, z)
                     _this.scene.add(tree)
-                });
+                })
             }
 
-            // 医院
-            function addHospital() {
-                let hospital = createHospital()
-                hospital.position.z = -20
-                _this.scene.add(hospital)
+            function createLamp() {
+                let lamp = new THREE.Object3D()
+                let pillarGeomertry = new THREE.CubeGeometry(2, 30, 2)
+                pillarGeomertry.translate(0, 15, 0)
+                let pillar = utils.makeMesh('phong', pillarGeomertry, 0xebd1c2)
+                lamp.add(pillar)
+
+                let connectGeometry = new THREE.CubeGeometry(10, 1, 1)
+                let connect = utils.makeMesh('phong', connectGeometry, 0x2c0e0e)
+                connect.position.set(3, 30, 0)
+                lamp.add(connect)
+
+                let lightGeometry = new THREE.CubeGeometry(6, 2, 4)
+                let light
+                light = utils.makeMesh('phong', lightGeometry, 0xebd1c2)
+                light.position.set(10, 30, 0)
+                lamp.add(light)
+
+                return lamp
             }
 
-            // 创建医院
-            function createHospital () {
+            function createHospital() {
                 let hospital = new THREE.Object3D()
 
                 let baseGeometry = new THREE.BoxBufferGeometry(180, 3, 140)
@@ -273,35 +293,30 @@ export default {
                     [20, -30],
                     [-80, -30]
                 ]
-
-                // 医院的身体
                 let frontMainShape = utils.makeShape(frontMainCoords)
                 let frontMainGeometry = utils.makeExtrudeGeometry(frontMainShape, 100)
-                let frontMainMaterial = new THREE.MeshPhongMaterial({map : textures.window()})
+                let frontMainMaterial = new THREE.MeshPhongMaterial({ map: textures.window() })
                 frontMainMaterial.map.repeat.set(0.1, 0.08)
                 let frontMain = new THREE.Mesh(frontMainGeometry, frontMainMaterial)
                 frontMain.castShadow = true
                 frontMain.receiveShadow = true
                 hospital.add(frontMain)
 
-                // 医院的头部
                 let frontTopShape = frontMainShape
                 let frontTopGeometry = utils.makeExtrudeGeometry(frontTopShape, 5)
                 let frontTop = utils.makeMesh('lambert', frontTopGeometry, 0xb1a7af)
                 frontTop.position.y = 100
                 hospital.add(frontTop)
 
-                // 天台上不知道什么白白的架子
                 let frontRoofShelfGeometry = new THREE.Geometry()
                 let frontRoofShelfCubeGeometry = new THREE.BoxGeometry(2, 2, 40)
-
-                // 下垂的
+                // for z-axis
                 for (let i = 0; i < 12; i++) {
                     let geometry = frontRoofShelfCubeGeometry.clone()
                     geometry.translate(i * 5, 0, 0)
                     frontRoofShelfGeometry.merge(geometry)
                 }
-                // 横向的
+                // for x-axis
                 for (let i = 0; i < 2; i++) {
                     let geometry = frontRoofShelfCubeGeometry.clone()
                     geometry.rotateY(0.5 * Math.PI)
@@ -309,21 +324,20 @@ export default {
                     geometry.translate(27, 0, -15 + i * 30)
                     frontRoofShelfGeometry.merge(geometry)
                 }
-                // 立起来的
+                // for y-axis
                 let frontRoofShelfCubeYPosition = [
                     [0, 0],
                     [1, 0],
                     [0, 1],
                     [1, 1]
                 ]
-
-                for (let index = 0; index < frontRoofShelfCubeYPosition.length; index++) {
-                    const p = frontRoofShelfCubeYPosition[index];
-                    let grometry = frontRoofShelfCubeGeometry.clone()
-                    grometry.scale(1, 1, 0.4)
-                    grometry.rotateX(0.5 * Math.PI)
-                    grometry.translate(p[0] * 55, 0, -15 + p[1] * 30)
-                    frontRoofShelfGeometry.merge(grometry)
+                for (let i = 0; i < frontRoofShelfCubeYPosition.length; i++) {
+                    let p = frontRoofShelfCubeYPosition[i]
+                    let geometry = frontRoofShelfCubeGeometry.clone()
+                    geometry.scale(1, 1, 0.4)
+                    geometry.rotateX(0.5 * Math.PI)
+                    geometry.translate(p[0] * 55, 0, -15 + p[1] * 30)
+                    frontRoofShelfGeometry.merge(geometry)
                 }
 
                 frontRoofShelfGeometry = new THREE.BufferGeometry().fromGeometry(frontRoofShelfGeometry)
@@ -331,26 +345,22 @@ export default {
                 frontRoofShelf.position.set(-70, 115, 5)
                 hospital.add(frontRoofShelf)
 
-                // 下面蓝蓝的不知道什么鬼
                 let frontPlatGeometry = new THREE.BoxBufferGeometry(150, 3, 90)
-                let frontPlat = utils.makeMesh('lambert', frontPlatGeometry, 0x0792a5)
-                frontPlat.position.set(-3, 18, 25)
-                hospital.add(frontPlat)
+                let fronPlat = utils.makeMesh('lambert', frontPlatGeometry, 0x0792a5)
+                fronPlat.position.set(-3, 18, 25)
+                hospital.add(fronPlat)
 
-                // 下面蓝蓝的不知道什么鬼抬上来的部分
                 let frontPlatVerticalGeometry = new THREE.BoxBufferGeometry(150, 15, 3)
                 let frontPlatVertical = utils.makeMesh('phong', frontPlatVerticalGeometry, 0x0792a5)
                 frontPlatVertical.receiveShadow = false
                 frontPlatVertical.position.set(-3, 24, 68.5)
                 hospital.add(frontPlatVertical)
 
-                // 下面蓝蓝的不知道什么鬼抬上来的部分白色区域
                 let frontPlatVerticalWhiteGeometry = new THREE.BoxBufferGeometry(150, 3, 3)
                 let frontPlatVerticalWhite = utils.makeMesh('phong', frontPlatVerticalWhiteGeometry, 0xffffff)
                 frontPlatVerticalWhite.position.set(-3, 33, 68.5)
                 hospital.add(frontPlatVerticalWhite)
-                
-                // 蓝色台下面的石柱
+
                 let frontPlatPillarGeometry = new THREE.CylinderGeometry(2, 2, 15, 32)
                 let frontPlatPillar = utils.makeMesh('lambert', frontPlatPillarGeometry, 0xffffff)
                 frontPlatPillar.position.set(-60, 10, 55)
@@ -359,25 +369,20 @@ export default {
                 let frontPlatPillar2 = frontPlatPillar.clone()
                 frontPlatPillar2.position.set(55, 10, 55)
                 hospital.add(frontPlatPillar2)
-                
-                // 医院边上的白柱子
+
                 let frontBorderVerticles = new THREE.Object3D()
                 let frontBorderVerticleGeometry = new THREE.BoxBufferGeometry(4, 106, 4)
                 let frontBorderVerticleMesh = utils.makeMesh('phong', frontBorderVerticleGeometry, 0xffffff)
                 let frontBorderVerticle1 = frontBorderVerticleMesh.clone()
                 frontBorderVerticle1.position.set(-80, 52, 30)
                 frontBorderVerticles.add(frontBorderVerticle1)
-                
                 let frontBorderVerticle2 = frontBorderVerticleMesh.clone()
                 frontBorderVerticle2.position.set(-80, 52, -20)
                 frontBorderVerticles.add(frontBorderVerticle2)
-
                 let frontBorderVerticle3 = frontBorderVerticleMesh.clone()
                 frontBorderVerticle3.position.set(50, 52, -18)
                 frontBorderVerticles.add(frontBorderVerticle3)
                 hospital.add(frontBorderVerticles)
-
-                // 屋顶的围栏
 
                 let frontRoofCoords = [
                     [-82, -32],
@@ -416,14 +421,12 @@ export default {
                     [-78, 58],
                     [-78, 22]
                 ]
-
-                // 后面房子的黄色背景
+                
                 let backMainShape = utils.makeShape(backMainCoords, backMainHolePath)
+
                 let backMainGeometry = utils.makeExtrudeGeometry(backMainShape, 90)
                 let backMain = utils.makeMesh('lambert', backMainGeometry, 0xf2e21b)
                 hospital.add(backMain)
-
-                // 后边房子的白色背景
 
                 let backMiddleCoords = [
                     [0, 0],
@@ -439,7 +442,6 @@ export default {
                     [2, 68],
                     [2, 2]
                 ]
-
                 let backMiddleShape = utils.makeShape(backMiddleCoords, backMiddleHolePath)
                 let backMiddkeGeometry = utils.makeExtrudeGeometry(backMiddleShape, 165)
                 let backMiddle = utils.makeMesh('lambert', backMiddkeGeometry, 0xffffff)
@@ -451,22 +453,20 @@ export default {
                 backMiddle.position.x = -78
                 hospital.add(backMiddle)
 
-                // 左边的窗户
                 let backMiddleWindowGeometry = new THREE.PlaneGeometry(32, 66, 1, 1)
-                let backMiddleWindowMaterial = new THREE.MeshPhongMaterial({ map: textures.window()})
+                let backMiddleWindowMaterial = new THREE.MeshPhongMaterial({ map: textures.window() })
                 backMiddleWindowMaterial.map.repeat.set(2, 6)
 
                 let backMiddleWindow = new THREE.Mesh(backMiddleWindowGeometry, backMiddleWindowMaterial)
                 backMiddleWindow.position.set(83, 51, -40)
-                backMiddleWindow.rotation.y = 0.5 * Math.PI;
+                backMiddleWindow.rotation.y = 0.5 * Math.PI
                 hospital.add(backMiddleWindow)
 
-                // 每个窗户
                 let windowBackOrigin = createWindow()
                 windowBackOrigin.scale.set(0.6, 0.6, 1)
-                windowBackOrigin.rotation.y = Math.PI;
+                windowBackOrigin.rotation.y = Math.PI
                 windowBackOrigin.position.set(65, 75, -61)
-                for (let i = 0; i< 7; i++) {
+                for (let i = 0; i < 7; i++) {
                     for (let j = 0; j < 4; j++) {
                         let windowObj = windowBackOrigin.clone()
                         windowObj.position.x -= i * 22
@@ -477,11 +477,9 @@ export default {
 
                 return hospital
             }
-            
-            // 创建窗户
-            function createWindow () {
+
+            function createWindow() {
                 let windowObj = new THREE.Object3D()
-                // 每个窗户
                 let glassGeometry = new THREE.PlaneGeometry(20, 20)
                 let glass = utils.makeMesh('phong', glassGeometry, 0x6a5e74)
                 windowObj.add(glass)
@@ -489,23 +487,19 @@ export default {
                 let windowBorderGeometry = new THREE.BoxBufferGeometry(22, 2, 2)
                 let windowBorder = utils.makeMesh('phong', windowBorderGeometry, 0xffffff)
 
-                // 顶部的横梁
                 let windowBorderTop = windowBorder.clone()
                 windowBorderTop.position.y = 10
                 windowObj.add(windowBorderTop)
 
-                // 底部的横梁
                 let windowBorderBottom = windowBorder.clone()
                 windowBorderBottom.position.y = -10
                 windowObj.add(windowBorderBottom)
 
-                // 左边的横梁
                 let windowBorderLeft = windowBorder.clone()
                 windowBorderLeft.rotation.z = 0.5 * Math.PI
                 windowBorderLeft.position.x = -10
                 windowObj.add(windowBorderLeft)
 
-                // 右边的横梁
                 let windowBorderRight = windowBorderLeft.clone()
                 windowBorderRight.position.x = 10
                 windowObj.add(windowBorderRight)
@@ -513,21 +507,18 @@ export default {
                 return windowObj
             }
 
-            // 创建树
-            function createTree (x, y, z) {
+            function createTree(x, y, z) {
                 x = x || 0
                 y = y || 0
                 z = z || 0
 
                 let tree = new THREE.Object3D()
 
-                // 树根
                 let treeTrunkGeometry = new THREE.BoxBufferGeometry(2, 16, 2)
                 let treeTrunk = utils.makeMesh('lambert', treeTrunkGeometry, 0x8a613a)
                 treeTrunk.position.y = 8
                 tree.add(treeTrunk)
-                
-                // 叶子
+
                 let treeLeafsGeometry = new THREE.BoxBufferGeometry(8, 8, 8)
                 let treeLeafs = utils.makeMesh('lambert', treeLeafsGeometry, 0x9c9e5d)
                 treeLeafs.position.y = 13
@@ -537,40 +528,20 @@ export default {
 
                 return tree
             }
-
-            // 创建路灯
-            function createLamp() {
-                let lamp = new THREE.Object3D()
-                let pillarGeomertry = new THREE.CubeGeometry(2, 30, 2)
-                pillarGeomertry.translate(0, 15, 0)
-                let pillar = utils.makeMesh('phong', pillarGeomertry, 0xebd1c2)
-                lamp.add(pillar)
-
-                let connectGeometry = new THREE.CubeGeometry(10, 1, 1)
-                let connect = utils.makeMesh('phong', connectGeometry, 0x2c0e0e)
-                connect.position.set(3, 30, 0)
-                lamp.add(connect)
-
-                let lightGeometry = new THREE.CubeGeometry(6, 2, 4)
-                let light = utils.makeMesh('phong', lightGeometry, 0xebd1c2)
-                light.position.set(10, 30, 0)
-                lamp.add(light)
-
-                return lamp
-            }
         },
-        buildLightSystem () {
+        buildLightSystem() {
+
             if (!this.config.isMobile) {
-                let directionalLight = new THREE.DirectionalLight(0xffffff, 1.1)
+                let directionalLight = new THREE.DirectionalLight(0xffffff, 1.1);
                 directionalLight.position.set(300, 1000, 500);
                 directionalLight.target.position.set(0, 0, 0);
-                directionalLight.castShadow = true
+                directionalLight.castShadow = true;
 
                 let d = 300;
                 directionalLight.shadow.camera = new THREE.OrthographicCamera(-d, d, d, -d, 500, 1600);
                 directionalLight.shadow.bias = 0.0001;
                 directionalLight.shadow.mapSize.width = directionalLight.shadow.mapSize.height = 1024;
-                this.scene.add(directionalLight);
+                this.scene.add(directionalLight)
 
                 let light = new THREE.AmbientLight(0xffffff, 0.3)
                 this.scene.add(light)
@@ -582,8 +553,8 @@ export default {
                 this.scene.add(light)
             }
         },
-        buildAuxSystem () {
-            // 地板
+        // 构建辅助系统
+        buildAuxSystem() {
             let gridHelper = new THREE.GridHelper(320, 32)
             this.scene.add(gridHelper)
 
@@ -592,7 +563,7 @@ export default {
             controls.dampingFactor = 0.25
             controls.rotateSpeed = 0.35
         },
-        carMoving (car) {
+        carMoving(car) {
             let angle = car.mesh.rotation.y
             let x = car.mesh.position.x,
                 z = car.mesh.position.z
@@ -604,7 +575,7 @@ export default {
                 car.forward()
             } else if (angle < Math.PI) {
                 car.turnLeft(0.5 * Math.PI, 0.1)
-            } else if (x > -145 && z === -145) {
+            } else if (x > -145 && z == -145) {
                 car.forward()
             } else if (angle < 1.5 * Math.PI) {
                 car.turnLeft(0.5 * Math.PI, 0.1)
@@ -618,18 +589,19 @@ export default {
                 car.mesh.rotation.set(0, 0, 0)
             }
         },
-        onWindowResize () {
+        onWindowResize() {
             window.addEventListener('resize', () => {
                 this.width = window.innerWidth
                 this.height = window.innerHeight
 
-                this.camera.aspect = this.width / this.height
+                this.camera.aspect = this.width / this.height;
                 this.camera.updateProjectionMatrix()
 
                 this.renderer.setSize(this.width, this.height)
             })
         },
-        loop () {
+        loop() {
+            // stats.update()
             this.cars.forEach(car => {
                 this.carMoving(car)
             })
@@ -637,40 +609,63 @@ export default {
             requestAnimationFrame(this.loop)
         }
     },
-    mounted () {
+    mounted() {
+
         this.width = window.innerWidth
         this.height = window.innerHeight
 
-        this.$nextTick(() => {
-            this.scene = new THREE.Scene()
-            this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 1, 5000)
-            this.camera.position.set(330, 330, 330)
-            this.camera.lookAt(this.scene.position);
+        this.scene = new THREE.Scene()
+        this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 1, 5000)
+        this.camera.position.set(330, 330, 330)
+        this.camera.lookAt(this.scene.position)
 
-            this.renderer = new THREE.WebGLRenderer({
-                antialias: true,
-                canvas: document.querySelector('canvas')
-            });
-            this.renderer.setSize(this.width, this.height)
-            this.renderer.setClearColor(this.config.background);
-            this.renderer.shadowMap.enabled = true;
-            this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
+        this.renderer = new THREE.WebGLRenderer({ 
+            antialias: true,
+            canvas: document.querySelector('canvas')
+        });
+        this.renderer.setSize(this.width, this.height)
+        this.renderer.setClearColor(this.config.background)
+        this.renderer.shadowMap.enabled = true
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
+        // document.body.appendChild(this.renderer.domElement)
 
-            this.checkUserAgent()
-            this.buildAuxSystem()
-            this.buildLightSystem()
-            this.buildbuilding()
-            this.buildRoad()
-            this.buildStaticCars()
-            this.buildMovingCars()
+        this.checkUserAgent()
 
-            this.loop()
-            this.onWindowResize()
-        })
+        this.buildAuxSystem()
+        this.buildLightSystem()
+        this.buildbuilding()
+        this.buildRoad()
+        this.buildStaticCars()
+        this.buildMovingCars()
+
+        this.loop()
+        this.onWindowResize()
     }
 }
-</script>
 
+</script>
+<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+.container {
+    margin: 20px 0;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    .info {
+        opacity: 0.2;
+    }
+    a {
+        display: block;
+        font-size: 16px;
+        line-height: 28px;
+        color: #ffffff;
+        text-decoration: none;
+    }
+}
+
+a.title {
+    font-size: 20px;
+    font-weight: bold;
+}
 
 </style>

@@ -14,6 +14,7 @@ export default new Router({
         {
             path: '/jump',
             name: 'jump',
+            // component: (resolve) => require(['@/pages/jump/index2.vue'], resolve)
             component: (resolve) => require(['@/pages/jump'], resolve)
         },
         {

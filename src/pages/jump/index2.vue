@@ -1,36 +1,34 @@
 <template>
-  <div class="container">
-      <div class="mask" v-if="finalPanelShow">
-          <div class="content">
-              <div class="score-container">
-                  <p class="title">本次得分</p>
-                  <p class="score">{{score}}</p>
-              </div>
-              <button class="restart" @click="restart">
-                  重新开始
-              </button>
-          </div>
-      </div>
-      <div class="info">
-          <a class="title" href="https://github.com/luosijie/threejs-examples">
+    <div class="container">
+        <div class="mask" v-if="finalPanelShow">
+            <div class="content">
+                <div class="score-container">
+                    <p class="title">本次得分</p>
+                    <p class="score">{{score}}</p>
+                </div>
+                <button class="restart" @click="restart">
+                    重新开始
+                </button>
+            </div>
+        </div>
+        <div class="info">
+            <a class="title" href="https://github.com/luosijie/threejs-examples" target="_blank">
               Jump
-          </a>
-          <a class="author" href="https://luosijie.github.io/">
+            </a>
+            <a class="author" href="https://luosijie.github.io/" target="_blank">
               Created By Jesse Luo
-          </a>
-          <div class="score-gaming">
-              得分: <span class="score-current">{{score}}</span>
-          </div>
-      </div>
-      <canvas />
-  </div>
+            </a>
+            <div class="score-gaming">
+                得分：<span class="score-current">{{score}}</span>
+            </div>
+        </div>
+        <canvas/>
+    </div>
 </template>
-
 <script>
-import Game from './js/game.js';
-
+import Game from './js/game2.js';
 export default {
-    data () {
+    data() {
         return {
             game: null,
             score: 0,
@@ -38,25 +36,30 @@ export default {
         }
     },
     methods: {
-        restart () {
+        // 游戏重新开始，执行函数
+        restart() {
             this.finalPanelShow = false
             this.game.restart()
         },
-        failed () {
+        // 游戏失败执行函数
+        failed() {
+            console.log('失败了');
             this.score = this.game.score
             this.finalPanelShow = true
         },
-        success (score) {
+        // 游戏成功，更新分数
+        success(score) {
             this.score = score
         }
     },
-    mounted () {
+    mounted() {
         this.game = new Game()
         this.game.addSuccessFn(this.success)
         this.game.addFailedFn(this.failed)
         this.game.init()
     }
 }
+
 </script>
 
 <style lang="scss" scoped>
